@@ -1,6 +1,5 @@
 // Store the API query as endpoint.
 let quakeURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
-let geojson
 
 // Perform a GET request to the query URL.
 d3.json(quakeURL).then(function(data) {
@@ -31,7 +30,7 @@ d3.json(quakeURL).then(function(data) {
                 else if (features.geometry.coordinates[2] >= 50 && features.geometry.coordinates[2] <= 70)
                 return "#feb72a" //orange
                 else if (features.geometry.coordinates[2] >= 70 && features.geometry.coordinates[2] <= 90)
-                return "##fca35d" //orange-red
+                return "#fca35d" //orange-red
                 else
                 return "#ff5f65" //red
             }
@@ -90,9 +89,24 @@ d3.json(quakeURL).then(function(data) {
       zoom: 5,
       layers: [street, earthquakes],
     });
-
-    function getColor(d) {
-        return geojson.options.colors[d]
+    
+    // let geojson;
+    
+    d3.json(quakeURL).then(function(data) {
+        let geojson = L.control(data, {
+          valueProperty: 'coordinates[2]', // which property in the features to use
+          scale: [("#a4f600", "#ddf400", "#f7db10", "#feb72a", "#ff5f65")], // chroma.js scale - include as many as you like
+          steps: 6, // number of breaks or steps in range
+          mode: 'q', // q for quantile, e for equidistant, k for k-means
+          style: {
+            color: 'black', // border color
+            weight: 2,
+            fillOpacity: 0.8
+          }
+        })
+    
+    function changeColor(features) {
+        return geojson.options.colors[features]
     }
 
     let legend = L.control({position: 'bottomright'});
@@ -112,11 +126,12 @@ d3.json(quakeURL).then(function(data) {
     };
     legend.addTo(myMap)
    
-    }
+    },
   
     // Create a layer control that contains our baseMaps.
     // Be sure to add an overlay Layer that contains the earthquake GeoJSON.
-    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);       
+    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap));       
     
 
+}
 })
