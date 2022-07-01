@@ -90,48 +90,47 @@ d3.json(quakeURL).then(function(data) {
       layers: [street, earthquakes],
     });
     
-    // let geojson;
-    
-    d3.json(quakeURL).then(function(data) {
-        let geojson = L.control(data, {
-          valueProperty: 'coordinates[2]', // which property in the features to use
-          scale: [("#a4f600", "#ddf400", "#f7db10", "#feb72a", "#ff5f65")], // chroma.js scale - include as many as you like
-          steps: 6, // number of breaks or steps in range
-          mode: 'q', // q for quantile, e for equidistant, k for k-means
-          style: {
-            color: 'black', // border color
-            weight: 2,
-            fillOpacity: 0.8
-          }
-        })
-    
-    function changeColor(features) {
-        return geojson.options.colors[features]
+    function  getColour(s) {
+        if (s === '-10-10')
+        return "#a4f600"; //lime
+        else if ( s === '10-30' ) 
+        return "#ddf400"; //green-yellow
+        else if (s === '30-50')
+        return "#f7db10"; //yellow
+        else if (s === '50-70')
+        return "#feb72a"; //orange
+        else if (s === '70-90')
+        return "#fca35d"; //orange-red
+        else
+        return "#ff5f65" //red 
+       
+    }
+    var legend = L.control({position: 'bottomright'});
+
+    legend.onAdd = function (map) {
+        let legendDiv =  L.DomUtil.create('div', 'info legend'),
+           checkins = [
+            '-10-10', 
+            '10-30', 
+            '30-50',
+            '50-70', 
+            '70-90', 
+            '90+'],
+           title = ['<strong>Marker Color Codes</strong>'],
+            labels = [];
+        for ( var i=0; i < checkins.length; i++) {
+            labels.push( 
+                '<i class="square" style="background:' + getColour(checkins[i]) + '"></i>'+ checkins[i] + '')
+        }
+        legendDiv.innerHTML = labels.join('<br>');
+
+        return legendDiv;
     }
 
-    let legend = L.control({position: 'bottomright'});
-    console.log(geojson.options.limits)
-    console.log(geojson.options.colors)
-    legend.onAdd = function (map) {
-        let div = L.DomUtil.create('div', 'info legend'),
-            grades = geojson.options.limits.map(m => Math.round(m)), 
-            labels = [];
-        // loop through our density intervals and generate a label with a colored square for each interval
-        for (var i = 0; i < grades.length; i++) {
-            div.innerHTML +=
-                '<i style="background:' + getColor(i) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-        }
-        return div;
-    };
-    legend.addTo(myMap)
-   
-    },
+    legend.addTo(myMap);
   
     // Create a layer control that contains our baseMaps.
     // Be sure to add an overlay Layer that contains the earthquake GeoJSON.
-    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap));       
-    
-
-}
+    L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(myMap);       
+    };
 })
