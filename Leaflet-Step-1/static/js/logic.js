@@ -12,11 +12,12 @@ d3.json(quakeURL).then(function(data) {
             console.log(earthquakeData)
 
             function onEachFeature(features, layer) {
-
+            
+            
             layer.bindPopup(`<h3>${features.properties.title}</h3><hr>
                              Location: ${features.properties.place}<br>
                              Magnitude: ${features.properties.mag}<br>
-                             Depth: ${features.geometry.coordinates[2]} km<br>
+                             Depth: ${Math.round(features.geometry.coordinates[2])} km<br>
                              Date & Time: ${new Date(features.properties.updated)}`)
             }
             
@@ -91,36 +92,35 @@ d3.json(quakeURL).then(function(data) {
     });
     
     function  getColour(s) {
-        if (s === '-10-10')
+        if (s === '-10 to 10 km')
         return "#a4f600"; //lime
-        else if ( s === '10-30' ) 
+        else if ( s === '10 to 30 km' ) 
         return "#ddf400"; //green-yellow
-        else if (s === '30-50')
+        else if (s === '30 to 50 km')
         return "#f7db10"; //yellow
-        else if (s === '50-70')
+        else if (s === '50 to 70 km')
         return "#feb72a"; //orange
-        else if (s === '70-90')
+        else if (s === '70 to 90 km')
         return "#fca35d"; //orange-red
         else
         return "#ff5f65" //red 
-       
     }
-    var legend = L.control({position: 'bottomright'});
+
+    let legend = L.control({position: 'bottomright'});
 
     legend.onAdd = function (map) {
         let legendDiv =  L.DomUtil.create('div', 'info legend'),
-           checkins = [
-            '-10-10', 
-            '10-30', 
-            '30-50',
-            '50-70', 
-            '70-90', 
-            '90+'],
-           title = ['<strong>Marker Color Codes</strong>'],
-            labels = [];
-        for ( var i=0; i < checkins.length; i++) {
+           depths = [
+            '-10 to 10 km', 
+            '10 to 30 km', 
+            '30 to 50 km',
+            '50 to 70 km', 
+            '70 to 90 km', 
+            '90+ km'],
+           labels = ['Earthquake<br>Depth<hr>'];
+        for ( let i=0; i < depths.length; i++) {
             labels.push( 
-                '<i class="square" style="background:' + getColour(checkins[i]) + '"></i>'+ checkins[i] + '')
+                '<i class="square" style="background:' + getColour(depths[i]) + '"></i>'+ depths[i] + '')
         }
         legendDiv.innerHTML = labels.join('<br>');
 

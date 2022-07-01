@@ -12,20 +12,21 @@ body {
   }
 
 .leaflet-popup-content {
-    text-align: center;
+    text-align: left;
 }
 
 .legend { 
-    font-weight: bold;
-    color: gray;
+    
+    color: black;
     text-align: center;
-    width: 80px;
-    height: 105px;
+    width: 105px;
+    height: 190px;
     padding-top: 8px;
     padding-bottom: 8px;
     line-height: 18px;
     background: white;
     opacity: 1;
+    border-radius: 5px;
 }
 .legend i {
         width: 15px;
@@ -39,5 +40,6 @@ body {
         width: 10px;
         height: 10px;
         margin-top: 8px;
+        
 }
   
